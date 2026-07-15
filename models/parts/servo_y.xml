@@ -1,0 +1,14 @@
+<!-- ============================================================
+     servo_y.xml — TILT(pitch)サーボ単体 (MG996R)
+     px3_servo_node.h の SERVO_Y_PIN = 9 に対応。
+     コの字ブラケット先端に固定される側。
+     寸法: 40.7 x 19.7 x 42.9mm (データシート確定値)
+     質量: 55g
+     ============================================================ -->
+<mujocoinclude>
+  <body name="servo_y_body" pos="0 0 0">
+    <geom name="servo_y_geom" type="box"
+          size="0.0204 0.0099 0.0215"
+          mass="0.055" rgba="0.2 0.2 0.25 1"/>
+  </body>
+</mujocoinclude>

@@ -1,0 +1,33 @@
+# カメラ校正パラメータ
+# 出典: calib_result.yaml (実機校正データ, 2025-11-10取得, 20枚のチェッカーボード画像から算出)
+#
+# rms_reprojection_error=0.2736px と良好な校正品質。
+# 検証の結果、この歪み係数(dist_coeffs)による角度への影響は画面端(pixel_offset=600px程度)
+# でも最大0.17deg程度であり、ピンホール近似との差はごく小さいことを確認済み
+# (reports/05_optics_reproduction_feasibility.md 参照)。
+# それでも本実装では実機と完全に同じ cv2.undistortPoints を使用し、
+# 近似ではなく本来の変換をそのまま再現する。
+
+camera_matrix:
+  # fx, fy: 焦点距離(pixel単位)  cx, cy: 主点(pixel単位)
+  fx: 1298.6471780244358
+  fy: 1303.0902412491205
+  cx: 607.39380383778496
+  cy: 368.00217737818696
+
+dist_coeffs:
+  # k1, k2, p1, p2, k3 (OpenCV標準の5パラメータ歪みモデル)
+  k1: 0.078757549992708745
+  k2: 0.23741071566752794
+  p1: 0.0016892252317601264
+  p2: -0.0023305220327422649
+  k3: -1.7273419737082796
+
+image_width: 1280
+image_height: 720
+
+meta:
+  source: "calib_result.yaml"
+  calibration_date: "2025-11-10"
+  rms_reprojection_error_px: 0.2736326752265828
+  num_images_used: 20

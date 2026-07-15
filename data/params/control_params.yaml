@@ -1,0 +1,45 @@
+# Pattern-B 制御パラメータ
+# 出典: SensorFireld-PX4.3-day-pattern-B/SeamlessTrack/run.sh (実運用値)
+#
+# 実機コードの対応:
+#   control::AxisPdController (axis_pd_controller.hpp)
+#     center_deg / min_deg / max_deg にそのまま対応
+#
+# 注意: inference.h のデフォルト値 (x_min=0/x_max=180, y_min=20/y_max=90) とは
+#       異なる。本ファイルは run.sh の launch 引数(実運用値)を正とする。
+
+meta:
+  source: "SeamlessTrack/run.sh"
+  note: "run.sh の ros2 launch 引数をそのまま転記。実運用時のオーバーライド値。"
+
+axes:
+  yaw:      # PAN, servo_x, px3_servo_node.h の SERVO_X_PIN=10 に対応
+    center_deg: 90.0
+    min_deg: 30.0
+    max_deg: 150.0
+    mujoco_joint_name: "yaw"
+
+  pitch:    # TILT, servo_y, px3_servo_node.h の SERVO_Y_PIN=9 に対応
+    center_deg: 90.0
+    min_deg: 50.0
+    max_deg: 130.0
+    mujoco_joint_name: "pitch"
+
+# Level1/2 では未使用。将来の挙動追加(Q4リスト)で使用するパラメータを
+# ここに集約していく。値は px2/inference.h のデフォルト、または
+# fixed_report/ 内の各修正レポートに準拠する想定。
+future_params:
+  dead_zone_deg:
+    yaw: 1.5      # kYawDeadZoneDeg
+    pitch: 1.5    # kPitchDeadZoneDeg
+  lost_max_frames: 30          # run.sh実運用値 (inference.hデフォルトは15)
+  conf_threshold: 0.25         # YOLO confidence閾値
+  ack_timeout_ms: 50           # kAckTimeoutMs
+  watch_fps: 2.0               # run.sh実運用値
+  active_fps: 30.0
+  max_step_deg: 3.0            # レート制限、ペンデュラム抑制の実体
+  pd_gains:
+    kp_yaw: 0.3
+    kd_yaw: 0.2
+    kp_pitch: 0.3
+    kd_pitch: 0.2

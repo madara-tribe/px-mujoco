@@ -1,0 +1,76 @@
+<mujoco model="pattern_b_integrated">
+  <!-- ============================================================
+       pattern_b_integrated.xml — Pattern-B 統合モデル
+       parts/ 以下の個別パーツXMLを <include> で呼び出して組み立てる。
+
+       joint配置の設計方針:
+         - 各パーツXML(servo_x/servo_y/bracket/camera)は剛体形状のみを持ち、
+           joint自体は持たない(=可動軸はこの統合ファイル側で一元管理)。
+         - これは px3_servo_node.h の SERVO_X_PIN/SERVO_Y_PIN の分離、
+           および axis_pd_controller.hpp が yaw_axis_ / pitch_axis_ を
+           独立した構造体として持つ設計を、MJCF側でも踏襲したもの。
+
+       角度パラメータ(run.sh基準):
+         yaw(PAN)   center=90deg, min=30deg, max=150deg
+         pitch(TILT) center=90deg, min=50deg, max=130deg
+       ============================================================ -->
+  <option timestep="0.002" gravity="0 0 -9.81"/>
+  <compiler angle="radian" autolimits="true"/>
+
+  <visual>
+    <global offwidth="1280" offheight="960"/>
+  </visual>
+
+
+  <default>
+    <joint damping="0.2" armature="0.02"/>
+    <geom rgba="0.55 0.57 0.6 1"/>
+  </default>
+
+  <worldbody>
+    <light pos="0 0 1" dir="0 0 -1"/>
+    <geom name="floor" type="plane" size="1 1 0.1" rgba="0.9 0.9 0.9 1"/>
+
+    <!-- 固定ベース板 (土台。PANサーボは接着固定=world直結の固定物) -->
+    <body name="base" pos="0 0 0.02">
+      <geom name="base_geom" type="box" size="0.06 0.06 0.0015" rgba="0.3 0.3 0.3 1"/>
+
+      <!-- ===== PANサーボ本体を include (固定側, jointなし) ===== -->
+      <include file="parts/servo_x.xml"/>
+
+      <!-- yaw(PAN)関節: run.sh準拠 center=90deg, min=30deg, max=150deg
+           (radian: center=1.570796, min=0.523599, max=2.617994) -->
+      <body name="pan_link" pos="0 0 0.043">
+        <joint name="yaw" type="hinge" axis="0 0 1"
+               range="0.523599 2.617994" ref="1.570796"/>
+
+        <!-- ===== ブラケットを include ===== -->
+        <include file="parts/bracket.xml"/>
+
+        <!-- pitch(TILT)関節: run.sh準拠 center=90deg, min=50deg, max=130deg
+             (radian: center=1.570796, min=0.872665, max=2.268928) -->
+        <body name="tilt_link" pos="0 0 0.05">
+          <joint name="pitch" type="hinge" axis="0 1 0"
+                 range="0.872665 2.268928" ref="1.570796"/>
+
+          <!-- ===== TILTサーボ本体を include (jointなし) ===== -->
+          <include file="parts/servo_y.xml"/>
+
+          <!-- ===== カメラを include ===== -->
+          <include file="parts/camera.xml"/>
+        </body>
+      </body>
+    </body>
+  </worldbody>
+
+  <actuator>
+    <!-- position actuator: ctrlrangeはradian (run.sh値の変換: 30-150deg, 50-130deg) -->
+    <position name="servo_x" joint="yaw"   kp="12" ctrlrange="0.523599 2.617994"/>
+    <position name="servo_y" joint="pitch" kp="10" ctrlrange="0.872665 2.268928"/>
+  </actuator>
+
+  <sensor>
+    <jointpos name="yaw_pos"   joint="yaw"/>
+    <jointpos name="pitch_pos" joint="pitch"/>
+  </sensor>
+</mujoco>
