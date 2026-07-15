@@ -1,4 +1,4 @@
-# PX Sim v4 — TrackingModeFSM Integration
+# MuJoCo Simulation for PX4.3
 
 MuJoCo simulation for the Pattern-B system, based on the behavior and parameters of the real implementation in `SensorFireld-PX4.3-day-pattern-B`.
 
