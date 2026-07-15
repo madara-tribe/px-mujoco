@@ -9,6 +9,10 @@ This package contains:
 - Camera pixel-to-angle conversion
 - A `TrackingModeFSM` implementation for WATCH and DETECT/TRACK mode transitions
 
+
+<img width="700" height="500" alt="Image" src="https://github.com/user-attachments/assets/ca76cc81-e689-464f-a7bb-1d2d80d880a8" />
+
+
 ## What Changed in v4
 
 Version 4 follows the validation policy defined in `01_behavior_source_reference.md`.
